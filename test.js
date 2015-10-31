@@ -29,14 +29,13 @@ Generator().pipe(Render({
 
 	}
 }))
-.on('create', function (canvas) {
-	if (isBrowser) {
-		document.documentElement.appendChild(canvas);
-	}
-})
 .on('render', function (canvas) {
 	if (!isBrowser) {
 		process.stdout.write(canvas._canvas.frame());
 	}
 })
 .pipe(Sink());
+
+if (isBrowser) {
+	document.documentElement.appendChild(canvas);
+}
