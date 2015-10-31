@@ -1,0 +1,44 @@
+{
+  "name": "audio-render",
+  "version": "1.0.0",
+  "description": "Generic renderer pcm stream class, both browser/node",
+  "main": "index.js",
+  "scripts": {
+    "test": "node test",
+    "watch": "watchify ./test.js -d -o ./bundle.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/audio-lab/render"
+  },
+  "keywords": [
+    "audio",
+    "pcm",
+    "stream",
+    "render",
+    "canvas",
+    "drawille",
+    "sound",
+    "spectrum",
+    "spectrogram",
+    "waveform"
+  ],
+  "author": "Deema Yvanow <dfcreative@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/audio-lab/render/issues"
+  },
+  "homepage": "https://github.com/audio-lab/render",
+  "dependencies": {
+    "drawille-canvas": "^1.0.0",
+    "inherits": "^2.0.1",
+    "is-browser": "^2.0.1",
+    "pcm-util": "^1.1.9",
+    "xtend": "^4.0.0"
+  },
+  "devDependencies": {
+    "audio-generator": "^1.0.5",
+    "stream-sink": "^1.2.0",
+    "watchify": "^3.6.0"
+  }
+}
