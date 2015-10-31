@@ -1,6 +1,6 @@
 {
   "name": "audio-render",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "description": "Generic renderer pcm stream class, both browser/node",
   "main": "index.js",
   "scripts": {
