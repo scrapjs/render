@@ -1,4 +1,6 @@
-_Audio-render_ is a pass-through audio stream, providing structure for implementing rendering of any pcm information. It resolves common routines like inheriting stream, reading pcm format, providing unified API for rendering both in node/browser, events, options, hooks etc. Creating new rendering components based on _audio-render_ is as simple as creating them from scratch, but times more reliable. It is also useful for creating quick debuggers.
+_Audio-render_ is a pass-through audio stream, providing structure for rendering any pcm information.
+
+It resolves common routines like inheriting stream, reading pcm format, providing unified API for rendering both in node/browser, events, options, hooks etc. Creating new rendering components based on _audio-render_ is as simple as creating them from scratch, but times more reliable. It is also useful for creating quick debuggers.
 
 
 ## Usage
