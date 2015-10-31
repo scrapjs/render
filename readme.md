@@ -39,11 +39,9 @@ var renderer = RenderStream({
 
 
 //Depending on the enviromnent, expose canvas
-renderer.on('create', function (anvas) {
-	isBrowser && document.body.appendChild(renderer.canvas);
-}).on('beforeRender', function (canvas, data) {
-	canvas.strokeStyle = 'red';
-}).on('render', function (canvas, data) {
+isBrowser && document.body.appendChild(renderer.canvas);
+
+renderer.on('render', function (canvas, data) {
 	process.stdout.write(canvas._canvas.frame());
 });
 

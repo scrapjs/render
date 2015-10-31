@@ -73,10 +73,7 @@ function RenderStream (options) {
 		cancel(self._id);
 	});
 
-	self.emit('create', self.canvas);
-
 	function update () {
-		self.emit('beforeRender', self.canvas, self.data);
 		self.render(self.canvas, self.data);
 		self.emit('render', self.canvas, self.data);
 
