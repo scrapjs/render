@@ -1,4 +1,4 @@
-_Audio-render_ is a pass-through audio stream, providing structure for rendering any pcm information.
+_Audio-render_ is a pass-through audio stream, providing structure for rendering data.
 
 It resolves common routines like inheriting stream, reading pcm format, providing unified API for rendering both in node/browser, events, options, hooks etc. Creating new rendering components based on _audio-render_ is as simple as creating them from scratch, but times more reliable. It is also useful for creating quick debuggers.
 
@@ -39,13 +39,13 @@ var renderer = RenderStream({
 
 
 //Depending on the enviromnent, expose canvas
-if (isBrowser) {
-	document.body.appendChild(renderer.canvas);
-} else {
-	renderer.on('render', function (canvas, data) {
-		process.stdout.write(canvas._canvas.frame());
-	});
-}
+renderer.on('create', function (anvas) {
+	isBrowser && document.body.appendChild(renderer.canvas);
+}).on('beforeRender', function (canvas, data) {
+	canvas.strokeStyle = 'red';
+}).on('render', function (canvas, data) {
+	process.stdout.write(canvas._canvas.frame());
+});
 
 
 Generator().pipe(renderer).pipe(Speaker());

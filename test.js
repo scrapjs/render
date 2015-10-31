@@ -6,10 +6,6 @@ var isBrowser = require('is-browser');
 
 var canvas = new Canvas(120, 80);
 
-if (isBrowser) {
-	document.documentElement.appendChild(canvas);
-}
-
 Generator().pipe(Render({
 	channel: 0,
 	canvas: canvas,
@@ -33,6 +29,11 @@ Generator().pipe(Render({
 
 	}
 }))
+.on('create', function (canvas) {
+	if (isBrowser) {
+		document.documentElement.appendChild(canvas);
+	}
+})
 .on('render', function (canvas) {
 	if (!isBrowser) {
 		process.stdout.write(canvas._canvas.frame());
