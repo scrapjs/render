@@ -5,14 +5,17 @@
  * because rendering may require repetition of the same data multiple times.
  * It just plots captured amount of data to a canvas in user-defined way.
  *
- * Separation by node/browser files is also really unnecessary,
+ * Separation by node/browser files is also unnecessary,
  * we can detect environment in-place without serious size overdraft.
  * All the required modules provide short browser versions.
  *
  * Any routines which may vary, like sliding window behaviour,
  * realtime data binding, etc are left to user.
  *
- * @module  audio-spiral
+ * It is a transform stream with exception where there are no piped outputs,
+ * it releases data, i. e. behaves like a writable.
+ *
+ * @module  audio-render
  */
 
 
@@ -82,6 +85,7 @@ function RenderStream (options) {
 }
 
 
+/** It should be duplex not to block pipe if there is no output sink */
 inherits(RenderStream, Transform);
 
 
@@ -102,10 +106,35 @@ RenderStream.prototype.framesPerSecond = 20;
 
 
 /**
- * Capture data for rendering.
+ * Basically pass through
+ * but provide small delays to avoid blocking timeouts for rendering
  */
 RenderStream.prototype._transform = function (chunk, enc, cb) {
 	var self = this;
+	self.push(chunk);
+	self.capture(chunk, cb);
+};
+
+
+/**
+ * If pipes count is 0 - don’t stack data
+ */
+RenderStream.prototype._write = function (chunk, enc, cb) {
+	var self = this;
+	if (!self._readableState.pipesCount) {
+		self.capture(chunk, cb);
+	} else {
+		Transform.prototype._write.call(this, chunk, enc, cb);
+	}
+};
+
+
+/**
+ * Capture chunk of data for rendering
+ */
+RenderStream.prototype.capture = function (chunk, cb) {
+	var self = this;
+
 	//get channel data converting the input
 	var channelData = pcm.getChannelData(chunk, self.channel, self).map(function (sample) {
 		return pcm.convertSample(sample, self, {float: true});
@@ -113,9 +142,6 @@ RenderStream.prototype._transform = function (chunk, enc, cb) {
 
 	//shift data & ensure window size
 	self.data = self.data.concat(channelData).slice(-self.bufferSize);
-
-	//release the chunk to prevent blocking pipes
-	self.push(chunk);
 
 	//increase count
 	self._count += channelData.length;
@@ -127,7 +153,7 @@ RenderStream.prototype._transform = function (chunk, enc, cb) {
 	} else {
 		cb();
 	}
-}
+};
 
 
 /**

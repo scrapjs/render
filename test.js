@@ -14,6 +14,8 @@ Generator().pipe(Render({
 
 		ctx.clearRect(0,0,canvas.width, canvas.height);
 
+		if (!data.length) return;
+
 		//get average magnitude
 		var w = 5;
 		var magnitude = 0;

@@ -1,6 +1,6 @@
-_Audio-render_ is a pass-through audio stream, providing structure for rendering data.
+_Audio-render_ is a pass-through audio stream, providing structure for rendering any data-related information.
 
-It resolves common routines like inheriting stream, reading pcm format, providing unified API for rendering both in node/browser, events, options, hooks etc. Creating new rendering components based on _audio-render_ is as simple as creating them from scratch, but times more reliable. It is also useful for creating quick debuggers.
+It resolves common routines like inheriting stream, reading pcm format, capturing data, providing unified API for rendering both in node/browser, events, options, hooks etc. Creating new rendering components based on _audio-render_ is as simple as creating them from scratch, but times more reliable. It is also useful for creating quick debuggers.
 
 
 ## Usage
@@ -45,7 +45,8 @@ renderer.on('render', function (canvas, data) {
 	process.stdout.write(canvas._canvas.frame());
 });
 
-
+//Note that it is not necessary to pipe renderer somewhere
+//it has own sink, if is not piped anywhere
 Generator().pipe(renderer).pipe(Speaker());
 ```
 
