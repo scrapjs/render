@@ -1,7 +1,7 @@
 {
   "name": "audio-render",
   "version": "1.3.0",
-  "description": "Generic renderer pcm stream class, both browser/node",
+  "description": "Class for rendering audio stream data for frequency/time domains. Browser/node.",
   "main": "index.js",
   "scripts": {
     "test": "node test",
@@ -21,7 +21,10 @@
     "sound",
     "spectrum",
     "spectrogram",
-    "waveform"
+    "waveform",
+    "frequency",
+    "fft",
+    "stft"
   ],
   "author": "Deema Yvanow <dfcreative@gmail.com>",
   "license": "MIT",
