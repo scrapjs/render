@@ -1,6 +1,6 @@
 {
   "name": "audio-render",
-  "version": "1.3.0",
+  "version": "2.0.0",
   "description": "Class for rendering audio stream data for frequency/time domains. Browser/node.",
   "main": "index.js",
   "scripts": {
