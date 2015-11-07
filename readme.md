@@ -7,6 +7,17 @@ It resolves common routines like frequency analysis (fft), buffering data, readi
 
 [![$ npm install audio-render](http://nodei.co/npm/audio-render.png?mini=true)](http://npmjs.org/package/audio-render)
 
+```js
+myAudioStream
+.pipe(Render(function (canvas) {
+	var data = this.getFloatTimeDomainData();
+
+	//draw volume, spectrum, spectrogram, waveform — any data you need
+}))
+.pipe(Speaker());
+```
+
+## API
 
 ```js
 var Generator = require('audio-generator');
@@ -19,7 +30,6 @@ var isBrowser = require('is-browser');
 var renderer = RenderStream({
 	//custom rendering function, can be passed instead of options
 	render: function (canvas) {
-		//e. g. volume, spectrum, spectrogram, waveform etc.
 		//see audio-analyser for API
 		var fdata = this.getFrequencyData();
 		var waveform = this.getTimeData(size);
@@ -55,7 +65,6 @@ var renderer = RenderStream({
 
 	// Smoothing, or the priority of the old data over the new data
 	smoothingTimeConstant: 0.2
-
 
 	//...any pcm format options, if required. See pcm-util below.
 });
