@@ -20,9 +20,7 @@
 
 
 var inherits = require('inherits');
-var Transform = require('stream').Transform;
-var extend = require('xtend/mutable');
-var pcm = require('pcm-util');
+var Analyser = require('audio-analyser');
 var isBrowser = require('is-browser');
 var Canvas = require('drawille-canvas');
 
@@ -52,24 +50,20 @@ function RenderStream (options) {
 		};
 	}
 
-	Transform.call(self, options);
+	Analyser.call(self, options);
 
-	//overwrite options
-	extend(self, options);
 
 	//ensure canvas
 	if (!self.canvas) {
 		self.canvas = new Canvas();
 	}
 
-	//data buffer to draw
-	self.data = [];
+	//set throttling
+	self.throttle = 1000 / self.framesPerSecond;
 
-	//data counter
-	self._count = 0;
 
 	//plan rendering
-	self._id = raf(update, 1000 / self.framesPerSecond);
+	self._id = raf(update, self.throttle);
 
 	//stop on end
 	self.on('end', function () {
@@ -77,83 +71,21 @@ function RenderStream (options) {
 	});
 
 	function update () {
-		self.render(self.canvas, self.data);
-		self.emit('render', self.canvas, self.data);
+		self.render(self.canvas, self._data);
+		self.emit('render', self.canvas);
 
-		self._id = raf(update, 1000 / self.framesPerSecond);
+		self._id = raf(update, self.throttle);
 	}
 }
 
 
 /** It should be duplex not to block pipe if there is no output sink */
-inherits(RenderStream, Transform);
+inherits(RenderStream, Analyser);
 
-
-/** Get PCM format */
-extend(RenderStream.prototype, pcm.defaultFormat);
-
-
-/** Number of channel to display */
-RenderStream.prototype.channel = 0;
-
-
-/** Max size of a buffer - 1s, change if required more */
-RenderStream.prototype.bufferSize = 44100;
 
 
 /** How often to update */
 RenderStream.prototype.framesPerSecond = 20;
-
-
-/**
- * Basically pass through
- * but provide small delays to avoid blocking timeouts for rendering
- */
-RenderStream.prototype._transform = function (chunk, enc, cb) {
-	var self = this;
-	self.push(chunk);
-	self.capture(chunk, cb);
-};
-
-
-/**
- * If pipes count is 0 - don’t stack data
- */
-RenderStream.prototype._write = function (chunk, enc, cb) {
-	var self = this;
-	if (!self._readableState.pipesCount) {
-		self.capture(chunk, cb);
-	} else {
-		Transform.prototype._write.call(this, chunk, enc, cb);
-	}
-};
-
-
-/**
- * Capture chunk of data for rendering
- */
-RenderStream.prototype.capture = function (chunk, cb) {
-	var self = this;
-
-	//get channel data converting the input
-	var channelData = pcm.getChannelData(chunk, self.channel, self).map(function (sample) {
-		return pcm.convertSample(sample, self, {float: true});
-	});
-
-	//shift data & ensure window size
-	self.data = self.data.concat(channelData).slice(-self.bufferSize);
-
-	//increase count
-	self._count += channelData.length;
-
-	//meditate for a processor tick each FPS limit to make processor room for rendering
-	if (self._count / self.sampleRate > 1 / self.framesPerSecond) {
-		self._count %= Math.floor(self.sampleRate / self.framesPerSecond);
-		setTimeout(cb);
-	} else {
-		cb();
-	}
-};
 
 
 /**

@@ -9,7 +9,9 @@ var canvas = new Canvas(120, 80);
 Generator().pipe(Render({
 	channel: 0,
 	canvas: canvas,
-	render: function (canvas, data) {
+	render: function (canvas) {
+		var data = this.getTimeData();
+
 		var ctx = canvas.getContext('2d');
 
 		ctx.clearRect(0,0,canvas.width, canvas.height);
