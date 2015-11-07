@@ -1,6 +1,6 @@
-_Audio-render_ is a pass-through audio stream, providing structure for rendering any stream data.
+_Audio-render_ is a pass-through audio stream, providing structure for rendering stream audio data.
 
-It resolves common routines like inheriting stream, reading pcm format, capturing data, providing unified API for rendering both in node/browser, events, options, hooks etc. Creating new rendering components based on _audio-render_ is as simple as creating them from scratch, but times more reliable. It is also useful for creating quick debuggers.
+It resolves common routines like frequency analysis (fft), buffering data, reading pcm format, providing unified API for rendering both in node/browser, events, options, hooks etc. Creating new rendering components based on _audio-render_ is as simple as creating them from scratch, but times more reliable. It is also useful for creating quick debuggers.
 
 
 ## Usage
@@ -23,6 +23,10 @@ var renderer = RenderStream({
 		//see audio-analyser for API
 		var fdata = this.getFrequencyData();
 		var waveform = this.getTimeData(size);
+
+		//or use web-audio-api AnalyserNode methods here
+		this.getFloatFrequencyData(new Float32Array(self.frequencyBinCount));
+		this.getFloatTimeDomainData(new Float32Array(self.fftSize));
 	},
 
 	//channel number to render, 0 - L, 1 - R, ...
@@ -37,8 +41,7 @@ var renderer = RenderStream({
 	//custom canvas (optinal), if you need to render along with other renderer
 	canvas: undefined,
 
-
-	//Audio-analyser options:
+	//Analysis options
 
 	//Magnitude diapasone, in dB
 	minDecibels: -100,
