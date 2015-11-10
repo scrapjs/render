@@ -71,10 +71,19 @@ function RenderStream (options) {
 	});
 
 	function update () {
-		self.render(self.canvas, self._data);
-		self.emit('render', self.canvas);
-
 		self._id = raf(update, self.throttle);
+
+		try {
+			self.render(self.canvas, self._data);
+		} catch (e) {
+			throw e;
+		}
+
+		try {
+			self.emit('render', self.canvas);
+		} catch (e) {
+			throw e;
+		}
 	}
 }
 
